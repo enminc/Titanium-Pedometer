@@ -596,18 +596,32 @@ basicSwitch.addEventListener('change', function(e) {
     }
 });
 
-// Create a Slider.
-var senseSlider = Titanium.UI.createSlider({
-    min : 1,
-    max : 20,
-    value : Ti.App.Properties.getDouble('GLOBAL_SQRT'),
-    width : "70%",
-    height : 'auto',
-    top : 5,
-    right : 10,
-    zIndex : 2,
+	// Create a Slider.
 
-});
+if (Ti.Platform.osname == 'android') {
+	var senseSlider = Titanium.UI.createSlider({
+		min : 11,
+		max : 20,
+		value : Ti.App.Properties.getDouble('GLOBAL_SQRT'),
+		width : "70%",
+		height : 'auto',
+		top : 5,
+		right : 10,
+		zIndex : 2,
+	});
+} else {
+	var senseSlider = Titanium.UI.createSlider({
+		min : 1,
+		max : 8,
+		value : Ti.App.Properties.getDouble('GLOBAL_SQRT') / 10.5,
+		width : "70%",
+		height : 'auto',
+		top : 5,
+		right : 10,
+		zIndex : 2,
+	});
+}
+
 
 // Listen for change events.
 senseSlider.addEventListener('change', function(e) {
@@ -637,30 +651,62 @@ var lblSliderTitle = Ti.UI.createLabel({
 });
 sliderView.add(lblSliderTitle);
 
-var lblSlider = Ti.UI.createLabel({
-    color : '#fff',
-    font : {
-        fontSize : "15sp"
-    },
-    text : Ti.App.Properties.getDouble('GLOBAL_SQRT'),
-    top : 23,
-    left : 5,
-    //width : 300
-});
-sliderView.add(lblSlider);
 
-var btnSettings = Ti.UI.createSwitch({
-    bottom : 6,
-    right : 6,
-    value : false, // mandatory property for iOS
-    zIndex : 3,
-    width : 30,
-    height : 30,
-    backgroundImage : '../images/gear.png',
-    titleOn : "",
-    titleOff : ""
-});
-win.add(btnSettings);
+if (Ti.Platform.osname == 'android') {
+	var lblSlider = Ti.UI.createLabel({
+		color : '#fff',
+		font : {
+			fontSize : "15sp"
+		},
+		text : Ti.App.Properties.getDouble('GLOBAL_SQRT'),
+		top : 23,
+		left : 5,
+		//width : 300
+	});
+	sliderView.add(lblSlider);
+} else {
+	var lblSlider = Ti.UI.createLabel({
+		color : '#fff',
+		font : {
+			fontSize : "15sp"
+		},
+		text : Ti.App.Properties.getDouble('GLOBAL_SQRT') / 10.5,
+		top : 23,
+		left : 5,
+		//width : 300
+	});
+	sliderView.add(lblSlider);
+}
+
+
+if (Ti.Platform.osname == 'android') {
+	var btnSettings = Ti.UI.createSwitch({
+		bottom : 6,
+		right : 6,
+		value : false, // mandatory property for iOS
+		zIndex : 3,
+		width : 30,
+		height : 30,
+		backgroundImage : '../images/gear.png',
+		titleOn : "",
+		titleOff : ""
+	});
+	win.add(btnSettings);
+} else {
+	var btnSettings = Ti.UI.createSwitch({
+		bottom : 6,
+		right : 6,
+		value : false, // mandatory property for iOS
+		zIndex : 3,
+		width : 30,
+		height : 30,
+		//backgroundImage : '../images/gear.png',
+		titleOn : "",
+		titleOff : ""
+	});
+	win.add(btnSettings);
+}
+
 
 headerView.hide();
 sliderView.hide();

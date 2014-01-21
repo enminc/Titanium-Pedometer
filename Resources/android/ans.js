@@ -124,7 +124,7 @@ var accelerometerCallback = function(e) {
     }
 
     //If they did less than 5k steps in 24 hours, notify
-    if (Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME') > 86400 && Ti.Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') <= 5000 && midNotificationLag == false) {
+    if (Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME') > 86400 && Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') <= 5000 && midNotificationLag == false) {
         midNotificationLag = true;
         var notificationOptions = {
             //contentIntent : pending,

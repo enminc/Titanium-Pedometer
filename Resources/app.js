@@ -83,6 +83,8 @@ function isiOS4Plus() {
 
 if (isiOS4Plus()) {
 
+	Ti.App.idleTimerDisabled = true;
+
 	var service;
 	/*
 		service = Ti.App.iOS.registerBackgroundService({
