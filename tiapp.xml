@@ -48,6 +48,9 @@
     	<services>
 	        <service url="ans.js" type="interval"/>
 	    </services>
+	    <manifest>
+        	<supports-screens android:anyDensity="false"/>
+    	</manifest>
 	</android>
     <mobileweb>
         <precache/>
