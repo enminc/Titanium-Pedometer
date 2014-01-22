@@ -198,7 +198,7 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== -1
     alert('Accelerometer does not work on a virtual device');
 } else {
     try {
-        //Ti.Accelerometer.addEventListener('update', accelerometerCallback);
+        Ti.Accelerometer.addEventListener('update', accelerometerCallback);
     } catch (e) {
         Ti.API.info('ERROR 1:' + e.message);
     }
@@ -224,7 +224,6 @@ if (Ti.Platform.model === 'Simulator' || Ti.Platform.model.indexOf('sdk') !== -1
 }
 
 Titanium.API.info('Hello World, I am a Service');
-Ti.Accelerometer.addEventListener('update', accelerometerCallback);
 
 /*===================================
  *

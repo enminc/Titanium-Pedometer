@@ -397,31 +397,60 @@ var timer = setInterval(function() {
 }, 1000); 
 
 
-var stepsBackViewBorder = Ti.UI.createImageView({
-    width : per60,
-    height : per60,
-    borderRadius : per60 / 2,
-    borderColor : '#F45D0E',
-    top : 0,
-    borderWidth : "25dp",
-    zIndex : 1,
-    //backgroundColor : '#CCC',
-});
-win.add(stepsBackViewBorder);
+if (Ti.Platform.osname == 'android') {
+    var stepsBackViewBorder = Ti.UI.createImageView({
+        width : per60,
+        height : per60,
+        borderRadius : per60 * 2,
+        borderColor : '#F45D0E',
+        top : 0,
+        borderWidth : "25dp",
+        zIndex : 1,
+        //backgroundColor : '#CCC',
+    });
+    win.add(stepsBackViewBorder);
 
-var stepsBackView = Ti.UI.createView({
-    width : per60,
-    height : per60,
-    borderRadius : per60 / 2,
-    borderColor : '#3D3D3D',
-    top : 0,
-    borderWidth : "1dp",
-    backgroundImage : '../images/hexellence.png',
-    backgroundRepeat : true,
-    //backgroundColor : "#D5FFF8"
+    var stepsBackView = Ti.UI.createView({
+        width : per60,
+        height : per60,
+        borderRadius : per60 * 2,
+        borderColor : '#3D3D3D',
+        top : 0,
+        borderWidth : "1dp",
+        backgroundImage : '../images/hexellence.png',
+        backgroundRepeat : true,
+        //backgroundColor : "#D5FFF8"
 
-});
-win.add(stepsBackView);
+    });
+    win.add(stepsBackView);
+} else {
+    var stepsBackViewBorder = Ti.UI.createImageView({
+        width : per60,
+        height : per60,
+        borderRadius : per60 / 2,
+        borderColor : '#F45D0E',
+        top : 0,
+        borderWidth : "25dp",
+        zIndex : 1,
+        //backgroundColor : '#CCC',
+    });
+    win.add(stepsBackViewBorder);
+
+    var stepsBackView = Ti.UI.createView({
+        width : per60,
+        height : per60,
+        borderRadius : per60 / 2,
+        borderColor : '#3D3D3D',
+        top : 0,
+        borderWidth : "1dp",
+        backgroundImage : '../images/hexellence.png',
+        backgroundRepeat : true,
+        //backgroundColor : "#D5FFF8"
+
+    });
+    win.add(stepsBackView);
+}
+
 
 var lblSteps = Titanium.UI.createLabel({
     //width : 250,
@@ -450,37 +479,73 @@ var lblStepsTitle = Titanium.UI.createLabel({
 });
 win.add(lblStepsTitle);
 
-var btnResetBorder = Ti.UI.createImageView({
-    //title : 'Reset',
-    bottom : per42,
-    zIndex : 2,
-    width : per15,
-    height : per15,
-    borderRadius : per15 / 2,
-    //backgroundColor : '#F45D0E',
-    borderColor : '#F45D0E',
-    //top : 0,
-    borderWidth : "5dp",
-});
-win.add(btnResetBorder);
 
-var btnReset = Ti.UI.createButton({
-    title : 'RESET',
-    font : {
-        fontSize : "17sp"
-    },
-    bottom : per42,
-    zIndex : 3,
-    width : per15,
-    height : per15,
-    borderRadius : per15 / 2,
-    backgroundColor : '#F45D0E',
-    borderColor : '#F45D0E',
-    //top : 0,
-    borderWidth : "1dp",
-    //text : 'RESET'
-});
-win.add(btnReset);
+if (Ti.Platform.osname == 'android') {
+    var btnResetBorder = Ti.UI.createImageView({
+        //title : 'Reset',
+        bottom : per42,
+        zIndex : 2,
+        width : per15,
+        height : per15,
+        borderRadius : per15 * 2,
+        //backgroundColor : '#F45D0E',
+        borderColor : '#F45D0E',
+        //top : 0,
+        borderWidth : "5dp",
+    });
+    win.add(btnResetBorder);
+
+    var btnReset = Ti.UI.createButton({
+        title : 'RESET',
+        font : {
+            fontSize : "17sp"
+        },
+        bottom : per42,
+        zIndex : 3,
+        width : per15,
+        height : per15,
+        borderRadius : per15 * 2,
+        backgroundColor : '#F45D0E',
+        borderColor : '#F45D0E',
+        //top : 0,
+        borderWidth : "1dp",
+        //text : 'RESET'
+    });
+    win.add(btnReset);
+} else {
+    var btnResetBorder = Ti.UI.createImageView({
+        //title : 'Reset',
+        bottom : per42,
+        zIndex : 2,
+        width : per15,
+        height : per15,
+        borderRadius : per15 / 2,
+        //backgroundColor : '#F45D0E',
+        borderColor : '#F45D0E',
+        //top : 0,
+        borderWidth : "5dp",
+    });
+    win.add(btnResetBorder);
+
+    var btnReset = Ti.UI.createButton({
+        title : 'RESET',
+        font : {
+            fontSize : "17sp"
+        },
+        bottom : per42,
+        zIndex : 3,
+        width : per15,
+        height : per15,
+        borderRadius : per15 / 2,
+        backgroundColor : '#F45D0E',
+        borderColor : '#F45D0E',
+        //top : 0,
+        borderWidth : "1dp",
+        //text : 'RESET'
+    });
+    win.add(btnReset);
+}
+
 
 //fire event to reset global steps to zero
 btnReset.addEventListener('click', function(e) {
