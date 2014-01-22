@@ -1,6 +1,7 @@
-Titanium Studio Pedometer (beta) for iOS & Android.
+Titanium Studio Pedometer (beta)
 ===================================================
-
+- Fully functional for Android.
+- In development for iOS.
 - Created to study the impact of positive reinforcement on physical activity.
 - There are issues with the iOS accelerometer working as a background process when the app is minimized.
 - Current build only works properly for Android.
