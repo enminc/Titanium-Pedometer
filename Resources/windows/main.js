@@ -16,13 +16,17 @@ if (Ti.App.Properties.getBool('GLOBAL_FIRST_START') == null) {
     Ti.App.Properties.setInt('GLOBAL_STEPS', 0);
     Ti.App.Properties.setBool('GLOBAL_FIRST_START', false);
     Ti.App.Properties.setBool('GLOBAL_AUTO_RESET', false);
-    Ti.App.Properties.setDouble('GLOBAL_SQRT', 17.9);
+    Ti.App.Properties.setDouble('GLOBAL_SQRT', 17.6);
     Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 0);
     Ti.App.Properties.setInt('GLOBAL_TEN_K_TIME', 0);
     Ti.App.Properties.setDouble('GLOBAL_TEN_K_TIME_START', startuptime);
+    Ti.App.Properties.setBool('GLOBAL_SCREEN_ON', true);
+    Ti.App.Properties.setBool('GLOBAL_NOTIFICATIONS', true);
 } else if (Ti.App.Properties.getBool('GLOBAL_FIRST_START') == false) {
     //Ti.App.Properties.setBool('GLOBAL_RESTART', true);
 }
+
+Titanium.UI.Window.keepScreenOn = Ti.App.Properties.getBool('GLOBAL_SCREEN_ON');
 
 /*===================================
  *
@@ -451,7 +455,6 @@ if (Ti.Platform.osname == 'android') {
     win.add(stepsBackView);
 }
 
-
 var lblSteps = Titanium.UI.createLabel({
     //width : 250,
     //bottom : per30,
@@ -573,6 +576,37 @@ btnReset.addEventListener('click', function(e) {
     });
 });
 
+var secretCountReset = 0;
+var secretCountSettings = 0;
+btnReset.addEventListener('click', function() {
+    secretCountReset++;
+    if (secretCountReset == 3 & secretCountSettings == 2){
+        notifySwitch.show();
+        secretCountReset = 0;
+        secretCountSettings = 0;
+        
+        headerView.show();
+    }
+    Ti.API.info('secretCountSettings = ' + secretCountSettings + '; secretCountReset = ' + secretCountReset);
+});
+
+// Create a Switch.
+var notifySwitch = Ti.UI.createSwitch({
+    value : Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS'),
+    zIndex: 10,
+    left : 0
+});
+
+// Listen for change events.
+notifySwitch.addEventListener('change', function(e) {
+    Ti.API.info('Event value: ' + e.value + ', switch value: ' + notifySwitch.value);
+    Ti.App.Properties.setBool('GLOBAL_NOTIFICATIONS', e.value);
+});
+
+// Add to the parent view.
+win.add(notifySwitch);
+notifySwitch.hide();
+
 //update statistics
 Ti.App.addEventListener('updateStep', function(event) {
     //steps = event.steps;
@@ -592,6 +626,8 @@ Ti.App.addEventListener('updateStep', function(event) {
     if (basicSwitch.value == true && (Ti.App.Properties.getInt('GLOBAL_STEPS') == Ti.App.Properties.getInt('GLOBAL_GOAL'))) {
         Ti.App.fireEvent('zeroStep');
     }
+    
+    lblSteps.keepScreenOn = Ti.App.Properties.getBool('GLOBAL_SCREEN_ON');
 });
 
 
@@ -638,7 +674,7 @@ var lblAuto = Ti.UI.createLabel({
         fontSize : "15sp"
     },
     text : 'Auto Reset',
-    bottom : 5,
+    bottom : 40,
     left : 5,
     zIndex : 2
 });
@@ -648,7 +684,7 @@ var basicSwitch = Ti.UI.createSwitch({
     value : Ti.App.Properties.getBool('GLOBAL_AUTO_RESET'), // mandatory property for iOS
     bottom : 0,
     zIndex : 2,
-    left : "30%",
+    left : 0
 });
 sliderView.add(basicSwitch);
 
@@ -661,18 +697,56 @@ basicSwitch.addEventListener('change', function(e) {
     }
 });
 
+var lblOn = Ti.UI.createLabel({
+    color : '#fff',
+    font : {
+        fontSize : "15sp"
+    },
+    text : 'Stay On',
+    bottom : 40,
+    left : "50%",
+    zIndex : 2
+});
+sliderView.add(lblOn);
+
+var sw2 = Ti.UI.createSwitch({
+    color : '#fff',
+    font : {
+        fontSize : "15sp"
+    },
+    text : 'Keep On',
+    bottom : 0,
+    left : "50%",
+    zIndex : 2,
+    value : Ti.App.Properties.getBool('GLOBAL_SCREEN_ON'),
+    exitOnClose : true
+    //style : Ti.UI.Android.SWITCH_STYLE_CHECKBOX
+});
+sliderView.add(sw2);
+ 
+sw2.addEventListener('click', function(e) {
+    if (e.source.value) {
+        Ti.App.Properties.setBool('GLOBAL_SCREEN_ON', true);
+        sw2.keepScreenOn = Ti.App.Properties.getBool('GLOBAL_SCREEN_ON');
+    } else {
+        Ti.App.Properties.setBool('GLOBAL_SCREEN_ON', false);
+        //sw2.setKeepScreenOn(false);
+        sw2.keepScreenOn = Ti.App.Properties.getBool('GLOBAL_SCREEN_ON');
+    }
+});
+
 	// Create a Slider.
 
 if (Ti.Platform.osname == 'android') {
 	var senseSlider = Titanium.UI.createSlider({
 		min : 11,
-		max : 20,
-		value : Ti.App.Properties.getDouble('GLOBAL_SQRT'),
+		max : 25,
+		value : Ti.App.Properties.getDouble('GLOBAL_SQRT') - 1,
 		width : "70%",
 		height : 'auto',
 		top : 5,
 		right : 10,
-		zIndex : 2,
+		zIndex : 2
 	});
 } else {
 	var senseSlider = Titanium.UI.createSlider({
@@ -683,10 +757,9 @@ if (Ti.Platform.osname == 'android') {
 		height : 'auto',
 		top : 5,
 		right : 10,
-		zIndex : 2,
+		zIndex : 2
 	});
 }
-
 
 // Listen for change events.
 senseSlider.addEventListener('change', function(e) {
@@ -777,8 +850,9 @@ headerView.hide();
 sliderView.hide();
 
 btnSettings.addEventListener('change', function(e) {
+    secretCountSettings++;
     if (e.value == true) {
-        headerView.show();
+        //headerView.show();
         sliderView.show();
     } else if (e.value == false) {
         headerView.hide();
