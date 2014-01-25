@@ -22,8 +22,59 @@ if (Ti.App.Properties.getBool('GLOBAL_FIRST_START') == null) {
     Ti.App.Properties.setDouble('GLOBAL_TEN_K_TIME_START', startuptime);
     Ti.App.Properties.setBool('GLOBAL_SCREEN_ON', true);
     Ti.App.Properties.setBool('GLOBAL_NOTIFICATIONS', true);
+
 } else if (Ti.App.Properties.getBool('GLOBAL_FIRST_START') == false) {
     //Ti.App.Properties.setBool('GLOBAL_RESTART', true);
+}
+
+if (Ti.App.Properties.getInt('GLOBAL_PHONE_NUM') == null) {
+
+    //First start enter phone number
+    var PhoneDialog = Ti.UI.createView({
+        //androidView : textfield,
+        title : "Enter LAST 5 of phone #",
+        //style : Ti.UI.iPhone.AlertDialogStyle.PLAIN_TEXT_INPUT,
+        //buttonNames : ['Save']
+        //message : 'row ' + row + ' index ' + index + ' section ' + section + ' row data ' + rowdata + ' phoneID ' + rowPhoneID,
+        //storePhoneID : rowPhoneID,
+        //cancel : 2,
+        //send : 0
+        //view : 1
+        width : "90%",
+        height : "50%",
+        zIndex : 15,
+        backgroundColor : 'black'
+    });
+    win.add(PhoneDialog);
+    PhoneDialog.show();
+
+    var Phonetxt = Ti.UI.createTextField({
+        height : 35,
+        top : 10,
+        left : 40,
+        width : "80%",
+        hintText : 'Enter LAST 5 of phone #',
+        softKeyboardOnFocus : Ti.UI.Android.SOFT_KEYBOARD_DEFAULT_ON_FOCUS, // Android only
+        keyboardType : Ti.UI.KEYBOARD_PHONE_PAD,
+        returnKeyType : Ti.UI.RETURNKEY_DEFAULT,
+        borderStyle : Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+        color : 'white'
+    });
+    PhoneDialog.add(Phonetxt);
+
+    var PhoneSave = Ti.UI.createButton({
+        title : "Save",
+        bottom : 0
+
+    });
+    PhoneDialog.add(PhoneSave);
+
+    PhoneSave.addEventListener('click', function(e) {
+        if (Phonetxt.value.length > 0) {
+            Ti.App.Properties.setString('GLOBAL_PHONE_NUM', Phonetxt.value);
+            PhoneDialog.hide();
+        }
+    });
 }
 
 Titanium.UI.Window.keepScreenOn = Ti.App.Properties.getBool('GLOBAL_SCREEN_ON');
@@ -119,28 +170,27 @@ var lblGoalSteps = Ti.UI.createLabel({
 });
 goalView.add(lblGoalSteps);
 
-
 if (Ti.Platform.osname == 'android') {
-	var chkGoal = Ti.UI.createSwitch({
-		style : Ti.UI.Android.SWITCH_STYLE_CHECKBOX,
-		//title : chkArray[i],
-		value : true,
-		right : '0dp',
-		zIndex : 3
-		//height : 25,
-		//width : 'auto'
+    var chkGoal = Ti.UI.createSwitch({
+        style : Ti.UI.Android.SWITCH_STYLE_CHECKBOX,
+        //title : chkArray[i],
+        value : true,
+        right : '0dp',
+        zIndex : 3
+        //height : 25,
+        //width : 'auto'
 
-	});
+    });
 } else {
-	var chkGoal = Ti.UI.createSwitch({
-		//title : chkArray[i],
-		value : true,
-		right : '0dp',
-		zIndex : 3
-		//height : 25,
-		//width : 'auto'
+    var chkGoal = Ti.UI.createSwitch({
+        //title : chkArray[i],
+        value : true,
+        right : '0dp',
+        zIndex : 3
+        //height : 25,
+        //width : 'auto'
 
-	});
+    });
 }
 
 goalView.add(chkGoal);
@@ -392,14 +442,13 @@ var newTime;
 var finalSeconds;
 
 var timer = setInterval(function() {
-	newTime = new Date().getTime();
-	finalSeconds = timerMilliseconds(newTime - start);
+    newTime = new Date().getTime();
+    finalSeconds = timerMilliseconds(newTime - start);
 
-	Ti.App.fireEvent('updateTimer', {
-		goalTime : finalSeconds
-	});
-}, 1000); 
-
+    Ti.App.fireEvent('updateTimer', {
+        goalTime : finalSeconds
+    });
+}, 1000);
 
 if (Ti.Platform.osname == 'android') {
     var stepsBackViewBorder = Ti.UI.createImageView({
@@ -482,7 +531,6 @@ var lblStepsTitle = Titanium.UI.createLabel({
 });
 win.add(lblStepsTitle);
 
-
 if (Ti.Platform.osname == 'android') {
     var btnResetBorder = Ti.UI.createImageView({
         //title : 'Reset',
@@ -549,7 +597,6 @@ if (Ti.Platform.osname == 'android') {
     win.add(btnReset);
 }
 
-
 //fire event to reset global steps to zero
 btnReset.addEventListener('click', function(e) {
 
@@ -580,11 +627,11 @@ var secretCountReset = 0;
 var secretCountSettings = 0;
 btnReset.addEventListener('click', function() {
     secretCountReset++;
-    if (secretCountReset == 3 & secretCountSettings == 2){
+    if (secretCountReset == 3 & secretCountSettings == 2) {
         notifySwitch.show();
         secretCountReset = 0;
         secretCountSettings = 0;
-        
+
         headerView.show();
     }
     Ti.API.info('secretCountSettings = ' + secretCountSettings + '; secretCountReset = ' + secretCountReset);
@@ -593,7 +640,7 @@ btnReset.addEventListener('click', function() {
 // Create a Switch.
 var notifySwitch = Ti.UI.createSwitch({
     value : Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS'),
-    zIndex: 10,
+    zIndex : 10,
     left : 0
 });
 
@@ -626,31 +673,29 @@ Ti.App.addEventListener('updateStep', function(event) {
     if (basicSwitch.value == true && (Ti.App.Properties.getInt('GLOBAL_STEPS') == Ti.App.Properties.getInt('GLOBAL_GOAL'))) {
         Ti.App.fireEvent('zeroStep');
     }
-    
+
     lblSteps.keepScreenOn = Ti.App.Properties.getBool('GLOBAL_SCREEN_ON');
 });
 
-
 if (Ti.Platform.osname == 'android') {
-	//capture back button event
-	win.addEventListener('android:back', function(e) {
+    //capture back button event
+    win.addEventListener('android:back', function(e) {
 
-		//nullify back button event
-		e.cancelBubble = true;
+        //nullify back button event
+        e.cancelBubble = true;
 
-		//simulate home button "minimizing" with back button
-		var intent = Ti.Android.createIntent({
-			action : Ti.Android.ACTION_MAIN
-		});
-		intent.addCategory(Ti.Android.CATEGORY_HOME);
-		Ti.Android.currentActivity.startActivity(intent);
+        //simulate home button "minimizing" with back button
+        var intent = Ti.Android.createIntent({
+            action : Ti.Android.ACTION_MAIN
+        });
+        intent.addCategory(Ti.Android.CATEGORY_HOME);
+        Ti.Android.currentActivity.startActivity(intent);
 
-		//hide txtGoal on minimize to avoid keyboard on resume
-		txtGoal.hide();
-		Ti.API.info('back button pressed');
-	});
+        //hide txtGoal on minimize to avoid keyboard on resume
+        txtGoal.hide();
+        Ti.API.info('back button pressed');
+    });
 }
-
 
 /*===================================
  *
@@ -723,7 +768,7 @@ var sw2 = Ti.UI.createSwitch({
     //style : Ti.UI.Android.SWITCH_STYLE_CHECKBOX
 });
 sliderView.add(sw2);
- 
+
 sw2.addEventListener('click', function(e) {
     if (e.source.value) {
         Ti.App.Properties.setBool('GLOBAL_SCREEN_ON', true);
@@ -735,30 +780,30 @@ sw2.addEventListener('click', function(e) {
     }
 });
 
-	// Create a Slider.
+// Create a Slider.
 
 if (Ti.Platform.osname == 'android') {
-	var senseSlider = Titanium.UI.createSlider({
-		min : 11,
-		max : 25,
-		value : Ti.App.Properties.getDouble('GLOBAL_SQRT') - 1,
-		width : "70%",
-		height : 'auto',
-		top : 5,
-		right : 10,
-		zIndex : 2
-	});
+    var senseSlider = Titanium.UI.createSlider({
+        min : 11,
+        max : 25,
+        value : Ti.App.Properties.getDouble('GLOBAL_SQRT') - 1,
+        width : "70%",
+        height : 'auto',
+        top : 5,
+        right : 10,
+        zIndex : 2
+    });
 } else {
-	var senseSlider = Titanium.UI.createSlider({
-		min : 1,
-		max : 8,
-		value : Ti.App.Properties.getDouble('GLOBAL_SQRT') / 10.5,
-		width : "70%",
-		height : 'auto',
-		top : 5,
-		right : 10,
-		zIndex : 2
-	});
+    var senseSlider = Titanium.UI.createSlider({
+        min : 1,
+        max : 8,
+        value : Ti.App.Properties.getDouble('GLOBAL_SQRT') / 10.5,
+        width : "70%",
+        height : 'auto',
+        top : 5,
+        right : 10,
+        zIndex : 2
+    });
 }
 
 // Listen for change events.
@@ -789,62 +834,59 @@ var lblSliderTitle = Ti.UI.createLabel({
 });
 sliderView.add(lblSliderTitle);
 
-
 if (Ti.Platform.osname == 'android') {
-	var lblSlider = Ti.UI.createLabel({
-		color : '#fff',
-		font : {
-			fontSize : "15sp"
-		},
-		text : Ti.App.Properties.getDouble('GLOBAL_SQRT'),
-		top : 23,
-		left : 5,
-		//width : 300
-	});
-	sliderView.add(lblSlider);
+    var lblSlider = Ti.UI.createLabel({
+        color : '#fff',
+        font : {
+            fontSize : "15sp"
+        },
+        text : Ti.App.Properties.getDouble('GLOBAL_SQRT'),
+        top : 23,
+        left : 5,
+        //width : 300
+    });
+    sliderView.add(lblSlider);
 } else {
-	var lblSlider = Ti.UI.createLabel({
-		color : '#fff',
-		font : {
-			fontSize : "15sp"
-		},
-		text : Ti.App.Properties.getDouble('GLOBAL_SQRT') / 10.5,
-		top : 23,
-		left : 5,
-		//width : 300
-	});
-	sliderView.add(lblSlider);
+    var lblSlider = Ti.UI.createLabel({
+        color : '#fff',
+        font : {
+            fontSize : "15sp"
+        },
+        text : Ti.App.Properties.getDouble('GLOBAL_SQRT') / 10.5,
+        top : 23,
+        left : 5,
+        //width : 300
+    });
+    sliderView.add(lblSlider);
 }
 
-
 if (Ti.Platform.osname == 'android') {
-	var btnSettings = Ti.UI.createSwitch({
-		bottom : 6,
-		right : 6,
-		value : false, // mandatory property for iOS
-		zIndex : 3,
-		width : 30,
-		height : 30,
-		backgroundImage : '../images/gear.png',
-		titleOn : "",
-		titleOff : ""
-	});
-	win.add(btnSettings);
+    var btnSettings = Ti.UI.createSwitch({
+        bottom : 6,
+        right : 6,
+        value : false, // mandatory property for iOS
+        zIndex : 3,
+        width : 30,
+        height : 30,
+        backgroundImage : '../images/gear.png',
+        titleOn : "",
+        titleOff : ""
+    });
+    win.add(btnSettings);
 } else {
-	var btnSettings = Ti.UI.createSwitch({
-		bottom : 6,
-		right : 6,
-		value : false, // mandatory property for iOS
-		zIndex : 3,
-		width : 30,
-		height : 30,
-		//backgroundImage : '../images/gear.png',
-		titleOn : "",
-		titleOff : ""
-	});
-	win.add(btnSettings);
+    var btnSettings = Ti.UI.createSwitch({
+        bottom : 6,
+        right : 6,
+        value : false, // mandatory property for iOS
+        zIndex : 3,
+        width : 30,
+        height : 30,
+        //backgroundImage : '../images/gear.png',
+        titleOn : "",
+        titleOff : ""
+    });
+    win.add(btnSettings);
 }
-
 
 headerView.hide();
 sliderView.hide();
@@ -867,7 +909,7 @@ btnSettings.addEventListener('change', function(e) {
  ===================================*/
 
 if (Ti.Platform.osname != 'android') {
-	
-Ti.include("bService.js");
+
+    Ti.include("bService.js");
 
 }

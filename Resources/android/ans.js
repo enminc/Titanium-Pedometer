@@ -249,15 +249,17 @@ createReq.onload = function() {
         //if failed reset steps to 10000
         Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 9998);
     } else {
-        var alertDialog = Titanium.UI.createAlertDialog({
-            title : 'Alert',
-            message : response.message,
-            buttonNames : ['OK']
-        });
-        alertDialog.show();
-        alertDialog.addEventListener('click', function(e) {
-            //win.tabGroup.setActiveTab(0);
-        });
+        if (Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS') == true) {
+            var alertDialog = Titanium.UI.createAlertDialog({
+                title : 'Alert',
+                message : response.message,
+                buttonNames : ['OK']
+            });
+            alertDialog.show();
+            alertDialog.addEventListener('click', function(e) {
+                //win.tabGroup.setActiveTab(0);
+            });
+        }
         //if successful, reset time and steps
         Ti.App.Properties.setInt('GLOBAL_TEN_K_TIME', 0);
         Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 0);
@@ -274,7 +276,8 @@ Ti.App.addEventListener('updateDB', function(e) {
     var params = {
         user : phoneID,
         tenKStepsTime : Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME'),
-        reminded : 1
+        reminded : Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS'),
+        phone : Ti.App.Properties.getString('GLOBAL_PHONE_NUM')
     };
     createReq.send(params);
 
