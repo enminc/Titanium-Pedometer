@@ -806,17 +806,33 @@ if (Ti.Platform.osname == 'android') {
     });
 }
 
-// Listen for change events.
-senseSlider.addEventListener('change', function(e) {
-    Ti.API.info('Slider value: ' + Math.round(e.value) + ' (actual: ' + Math.round(senseSlider.value) + ')');
-    var temp = e.value * 100;
-    temp = Math.round(temp);
-    temp = temp / 100;
-    Ti.API.info('REAL: ' + temp);
-    Ti.App.Properties.setDouble('GLOBAL_SQRT', temp);
-    lblSlider.text = temp;
-    lblSense.text = 'Sensitivity: ' + temp;
-});
+if (Ti.Platform.osname == 'android') {
+    // Listen for change events.
+    senseSlider.addEventListener('change', function(e) {
+        Ti.API.info('Slider value: ' + Math.round(e.value) + ' (actual: ' + Math.round(senseSlider.value) + ')');
+        var temp = e.value * 100;
+        temp = Math.round(temp);
+        temp = temp / 100;
+        temp = 25 - temp + 11;
+        Ti.API.info('REAL: ' + temp);
+        Ti.App.Properties.setDouble('GLOBAL_SQRT', temp);
+        lblSlider.text = temp;
+        lblSense.text = 'Sensitivity: ' + temp;
+    });
+} else {
+    // Listen for change events.
+    senseSlider.addEventListener('change', function(e) {
+        Ti.API.info('Slider value: ' + Math.round(e.value) + ' (actual: ' + Math.round(senseSlider.value) + ')');
+        var temp = e.value * 100;
+        temp = Math.round(temp);
+        temp = temp / 100;
+        temp = 8 - temp + 1;
+        Ti.API.info('REAL: ' + temp);
+        Ti.App.Properties.setDouble('GLOBAL_SQRT', temp);
+        lblSlider.text = temp;
+        lblSense.text = 'Sensitivity: ' + temp;
+    });
+}
 
 // Add to the parent view.
 sliderView.add(senseSlider);
@@ -845,7 +861,8 @@ if (Ti.Platform.osname == 'android') {
         left : 5,
         //width : 300
     });
-    sliderView.add(lblSlider);
+    //uncomment to show sensitivity value to user
+    //sliderView.add(lblSlider);
 } else {
     var lblSlider = Ti.UI.createLabel({
         color : '#fff',
@@ -857,7 +874,8 @@ if (Ti.Platform.osname == 'android') {
         left : 5,
         //width : 300
     });
-    sliderView.add(lblSlider);
+    //uncomment to show sensitivity value to user
+    //sliderView.add(lblSlider);
 }
 
 if (Ti.Platform.osname == 'android') {
