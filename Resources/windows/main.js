@@ -17,6 +17,7 @@ if (Ti.App.Properties.getBool('GLOBAL_FIRST_START') == null) {
     Ti.App.Properties.setBool('GLOBAL_FIRST_START', false);
     Ti.App.Properties.setBool('GLOBAL_AUTO_RESET', false);
     Ti.App.Properties.setDouble('GLOBAL_SQRT', 17.6);
+    Ti.App.Properties.setDouble('GLOBAL_SLIDER_VALUE', 17.6);
     Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 0);
     Ti.App.Properties.setInt('GLOBAL_TEN_K_TIME', 0);
     Ti.App.Properties.setDouble('GLOBAL_TEN_K_TIME_START', startuptime);
@@ -784,25 +785,25 @@ sw2.addEventListener('click', function(e) {
 
 if (Ti.Platform.osname == 'android') {
     var senseSlider = Titanium.UI.createSlider({
-        min : 11,
-        max : 25,
-        value : Ti.App.Properties.getDouble('GLOBAL_SQRT') - 1,
-        width : "70%",
+        min : 9,
+        max : 28,
+        value : Ti.App.Properties.getDouble('GLOBAL_SLIDER_VALUE'),
+        width : "85%",
         height : 'auto',
         top : 5,
         right : 10,
-        zIndex : 2
+        zIndex : 4
     });
 } else {
     var senseSlider = Titanium.UI.createSlider({
         min : 1,
         max : 8,
-        value : Ti.App.Properties.getDouble('GLOBAL_SQRT') / 10.5,
-        width : "70%",
+        value : Ti.App.Properties.getDouble('GLOBAL_SLIDER_VALUE') / 10.5,
+        width : "80%",
         height : 'auto',
         top : 5,
         right : 10,
-        zIndex : 2
+        zIndex : 4
     });
 }
 
@@ -813,9 +814,10 @@ if (Ti.Platform.osname == 'android') {
         var temp = e.value * 100;
         temp = Math.round(temp);
         temp = temp / 100;
-        temp = 25 - temp + 11;
+        temp = 28 - temp + 9;
         Ti.API.info('REAL: ' + temp);
         Ti.App.Properties.setDouble('GLOBAL_SQRT', temp);
+        Ti.App.Properties.setDouble('GLOBAL_SLIDER_VALUE', e.value);
         lblSlider.text = temp;
         lblSense.text = 'Sensitivity: ' + temp;
     });
@@ -828,9 +830,10 @@ if (Ti.Platform.osname == 'android') {
         temp = temp / 100;
         temp = 8 - temp + 1;
         Ti.API.info('REAL: ' + temp);
-        Ti.App.Properties.setDouble('GLOBAL_SQRT', temp);
-        lblSlider.text = temp;
-        lblSense.text = 'Sensitivity: ' + temp;
+        Ti.App.Properties.setDouble('GLOBAL_SQRT', e.value);
+        Ti.App.Properties.setDouble('GLOBAL_SLIDER_VALUE', e.value);
+        lblSlider.text = e.value;
+        lblSense.text = 'Sensitivity: ' + e.value;
     });
 }
 
