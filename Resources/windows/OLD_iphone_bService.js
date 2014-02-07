@@ -107,8 +107,8 @@ var accelerometerCallback = function(e) {
         var notificationOptions = {
             //contentIntent : pending,
             contentTitle : 'Half Way!',
-            contentText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' steps! Half way to 10k goal!',
-            tickerText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' STEPS',
+            contentText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' steps! Half way to 10k goal!',
+            tickerText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' STEPS',
             when : new Date().getTime(),
             //icon : Ti.App.Android.R.drawable.appicon,
             //flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_INSISTENT,
@@ -119,13 +119,13 @@ var accelerometerCallback = function(e) {
     }
 
     //If they did less than 5k steps in 24 hours, notify
-    if (Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME') > 86400 && Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') <= 5000 && midNotificationLag == false) {
+    if (Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME') > 86400 && Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') < 10000 && midNotificationLag == false) {
         midNotificationLag = true;
         var notificationOptions = {
             //contentIntent : pending,
             contentTitle : 'Keep Pushing!',
-            contentText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' so far.',
-            tickerText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' STEPS',
+            contentText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' so far.',
+            tickerText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' STEPS',
             when : new Date().getTime(),
             //icon : Ti.App.Android.R.drawable.appicon,
             //flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_INSISTENT,
@@ -155,13 +155,13 @@ var accelerometerCallback = function(e) {
 
     Titanium.API.info('steps: ' + Ti.App.Properties.getInt('GLOBAL_STEPS'));
 
-    if (Ti.App.Properties.getInt('GLOBAL_STEPS') == Ti.App.Properties.getInt('GLOBAL_GOAL') && soundPlayed == false) {
+    if (Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') == Ti.App.Properties.getInt('GLOBAL_GOAL') && soundPlayed == false) {
         soundPlayed = true;
         var notificationOptions = {
             //contentIntent : pending,
             contentTitle : 'CONGRATULATIONS!',
-            contentText : 'You reached your goal of ' + Ti.App.Properties.getInt('GLOBAL_STEPS') + ' steps!',
-            tickerText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' STEPS!',
+            contentText : 'You reached your goal of ' + Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' steps!',
+            tickerText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' STEPS!',
             when : new Date().getTime(),
             //icon : Ti.App.Android.R.drawable.appicon,
             //flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_SHOW_LIGHTS | Titanium.Android.FLAG_INSISTENT,
@@ -268,7 +268,8 @@ Ti.App.addEventListener('updateDB', function(e) {
     var params = {
         user : phoneID,
         tenKStepsTime : Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME'),
-        reminded : 1
+        reminded : 1,
+        steps : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS')
     };
     createReq.send(params);
     

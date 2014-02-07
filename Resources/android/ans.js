@@ -14,9 +14,12 @@ function timeMilliseconds(ms) {
 var start = new Date().getTime();
 var newTime;
 var finalSeconds;
+var hour;
 var timer = setInterval(function() {
     newTime = new Date().getTime();
     finalSeconds = timeMilliseconds(newTime - start);
+    hour = new Date().getHours();
+    Ti.App.Properties.setInt('GLOBAL_HOUR', hour);
 }, 1);
 
 // Copy resource file to SD card, and return a native path.
@@ -86,6 +89,8 @@ var temptenktime;
 var sqrtXYZ;
 var midNotificationLag = false;
 var midNotification = false;
+var hourStepUpdate = false;
+var hourStepUpdateCount = 0;
 
 var accelerometerCallback = function(e) {
     //newStepTime = e.timestamp;
@@ -112,8 +117,8 @@ var accelerometerCallback = function(e) {
             var notificationOptions = {
                 //contentIntent : pending,
                 contentTitle : 'Half Way!',
-                contentText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' steps! Half way to 10k goal!',
-                tickerText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' STEPS',
+                contentText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' steps! Half way to 10k goal!',
+                tickerText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' STEPS',
                 when : new Date().getTime(),
                 icon : Ti.App.Android.R.drawable.appicon,
                 flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_INSISTENT,
@@ -124,13 +129,13 @@ var accelerometerCallback = function(e) {
         }
 
         //If they did less than 5k steps in 24 hours, notify
-        if (Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME') > 86400 && Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') < 10000 && midNotificationLag == false) {
+        if (Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME') > 43200 && Ti.App.Properties.getInt('GLOBAL_HOUR') == 18 && Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') < 10000 && midNotificationLag == false) {
             midNotificationLag = true;
             var notificationOptions = {
                 //contentIntent : pending,
                 contentTitle : 'Keep Pushing!',
-                contentText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' so far.',
-                tickerText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' STEPS',
+                contentText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' so far.',
+                tickerText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' STEPS',
                 when : new Date().getTime(),
                 icon : Ti.App.Android.R.drawable.appicon,
                 flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_INSISTENT,
@@ -162,13 +167,13 @@ var accelerometerCallback = function(e) {
     Titanium.API.info('steps: ' + Ti.App.Properties.getInt('GLOBAL_STEPS'));
 
     if (Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS') == true) {
-        if (Ti.App.Properties.getInt('GLOBAL_STEPS') == Ti.App.Properties.getInt('GLOBAL_GOAL') && soundPlayed == false) {
+        if (Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') == Ti.App.Properties.getInt('GLOBAL_GOAL') && soundPlayed == false) {
             soundPlayed = true;
             var notificationOptions = {
                 //contentIntent : pending,
                 contentTitle : 'CONGRATULATIONS!',
-                contentText : 'You reached your goal of ' + Ti.App.Properties.getInt('GLOBAL_STEPS') + ' steps!',
-                tickerText : Ti.App.Properties.getInt('GLOBAL_STEPS') + ' STEPS!',
+                contentText : 'You reached your goal of ' + Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' steps!',
+                tickerText : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS') + ' STEPS!',
                 when : new Date().getTime(),
                 icon : Ti.App.Android.R.drawable.appicon,
                 flags : Titanium.Android.ACTION_DEFAULT | Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_SHOW_LIGHTS | Titanium.Android.FLAG_INSISTENT,
@@ -196,6 +201,17 @@ var accelerometerCallback = function(e) {
         //z : e.z,
         accumulatedTime : finalSeconds
     });
+
+    if (Ti.App.Properties.getInt('GLOBAL_HOUR') != 18) {
+        hourStepUpdate = false;
+        hourStepUpdateCount = 0;
+    }
+
+    if (Ti.App.Properties.getInt('GLOBAL_HOUR') == 18 && hourStepUpdate == false && hourStepUpdateCount == 0) {
+        hourStepUpdate = true;
+        hourStepUpdateCount++;
+        Ti.App.fireEvent('updateDB');
+    }
 
     //Ti.App.Properties.setInt('GLOBAL_STEPS', steps);
 };
@@ -245,29 +261,36 @@ createReq.onload = function() {
     if (response.logged == false) {
         //createBtn.enabled = true;
         //createBtn.opacity = 1;
-        alert(response.message);
+        
         //if failed reset steps to 10000
-        Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 9998);
-    } else {
-        if (Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS') == true) {
-            var alertDialog = Titanium.UI.createAlertDialog({
-                title : 'Alert',
-                message : response.message,
-                buttonNames : ['OK']
-            });
-            alertDialog.show();
-            alertDialog.addEventListener('click', function(e) {
-                //win.tabGroup.setActiveTab(0);
-            });
+        if (hourStepUpdate == false) {
+            alert(response.message);
+            Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 9998);
         }
-        //if successful, reset time and steps
-        Ti.App.Properties.setInt('GLOBAL_TEN_K_TIME', 0);
-        Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 0);
-        midNotificationLag = false;
-        midNotification = false;
-        soundPlayed = false;
-        var startuptime = new Date().getTime();
-        Ti.App.Properties.setDouble('GLOBAL_TEN_K_TIME_START', startuptime);
+        hourStepUpdate = false;
+    } else {
+        if (hourStepUpdate == false) {
+            if (Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS') == true) {
+                var alertDialog = Titanium.UI.createAlertDialog({
+                    title : 'Alert',
+                    message : response.message,
+                    buttonNames : ['OK']
+                });
+                alertDialog.show();
+                alertDialog.addEventListener('click', function(e) {
+                    //win.tabGroup.setActiveTab(0);
+                });
+            }
+            //if successful, reset time and steps
+            Ti.App.Properties.setInt('GLOBAL_TEN_K_TIME', 0);
+            Ti.App.Properties.setInt('GLOBAL_TEN_K_STEPS', 0);
+            midNotificationLag = false;
+            midNotification = false;
+            soundPlayed = false;
+            var startuptime = new Date().getTime();
+            Ti.App.Properties.setDouble('GLOBAL_TEN_K_TIME_START', startuptime);
+        }
+        hourStepUpdate = false;
     }
 };
 
@@ -277,7 +300,8 @@ Ti.App.addEventListener('updateDB', function(e) {
         user : phoneID,
         tenKStepsTime : Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME'),
         reminded : Ti.App.Properties.getBool('GLOBAL_NOTIFICATIONS'),
-        phone : Ti.App.Properties.getString('GLOBAL_PHONE_NUM')
+        phone : Ti.App.Properties.getString('GLOBAL_PHONE_NUM'),
+        steps : Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS')
     };
     createReq.send(params);
 

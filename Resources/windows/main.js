@@ -42,9 +42,10 @@ if (Ti.App.Properties.getInt('GLOBAL_PHONE_NUM') == null) {
         //send : 0
         //view : 1
         width : "90%",
-        height : "50%",
+        height : "40%",
         zIndex : 15,
-        backgroundColor : 'black'
+        top : "10%",
+        backgroundColor : '#CC000000'
     });
     win.add(PhoneDialog);
     PhoneDialog.show();
@@ -425,6 +426,18 @@ var lblTenKTime = Ti.UI.createLabel({
 });
 debugView.add(lblTenKTime);
 
+var lblhour = Ti.UI.createLabel({
+    color : 'black',
+    font : {
+        fontSize : 20
+    },
+    text : '-',
+    top : 180,
+    left : 10,
+    width : 300
+});
+debugView.add(lblhour);
+
 /*===================================
  *
  *  End Debug data
@@ -670,6 +683,7 @@ Ti.App.addEventListener('updateStep', function(event) {
     lblSecPeak.text = 'seconds peak: ' + Ti.App.Properties.getInt('GLOBAL_SECPEAK');
     lblTenKSteps.text = '10k steps: ' + Ti.App.Properties.getInt('GLOBAL_TEN_K_STEPS');
     lblTenKTime.text = '10k time: ' + Ti.App.Properties.getInt('GLOBAL_TEN_K_TIME');
+    lblhour.text = 'Hour: ' + Ti.App.Properties.getInt('GLOBAL_HOUR');
 
     if (basicSwitch.value == true && (Ti.App.Properties.getInt('GLOBAL_STEPS') == Ti.App.Properties.getInt('GLOBAL_GOAL'))) {
         Ti.App.fireEvent('zeroStep');
@@ -883,12 +897,12 @@ if (Ti.Platform.osname == 'android') {
 
 if (Ti.Platform.osname == 'android') {
     var btnSettings = Ti.UI.createSwitch({
-        bottom : 6,
-        right : 6,
+        bottom : 7,
+        right : 7,
         value : false, // mandatory property for iOS
         zIndex : 3,
-        width : 30,
-        height : 30,
+        width : 40,
+        height : 40,
         backgroundImage : '../images/gear.png',
         titleOn : "",
         titleOff : ""
@@ -896,12 +910,12 @@ if (Ti.Platform.osname == 'android') {
     win.add(btnSettings);
 } else {
     var btnSettings = Ti.UI.createSwitch({
-        bottom : 6,
-        right : 6,
+        bottom : 7,
+        right : 7,
         value : false, // mandatory property for iOS
         zIndex : 3,
-        width : 30,
-        height : 30,
+        width : 40,
+        height : 40,
         //backgroundImage : '../images/gear.png',
         titleOn : "",
         titleOff : ""
