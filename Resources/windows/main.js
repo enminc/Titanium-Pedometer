@@ -641,10 +641,10 @@ var secretCountReset = 0;
 var secretCountSettings = 0;
 btnReset.addEventListener('click', function() {
     secretCountReset++;
-    if (secretCountReset == 3 & secretCountSettings == 2) {
+    if (secretCountReset == 3 & secretCountSettings == 3) {
         notifySwitch.show();
-        secretCountReset = 0;
-        secretCountSettings = 0;
+        //secretCountReset = 0;
+        //secretCountSettings = 0;
 
         headerView.show();
     }
