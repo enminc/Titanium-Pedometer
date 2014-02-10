@@ -51,7 +51,7 @@ if (Ti.App.Properties.getInt('GLOBAL_PHONE_NUM') == null) {
     PhoneDialog.show();
 
     var Phonetxt = Ti.UI.createTextField({
-        height : "50%",
+        height : 60,
         //top : 10,
         left : 40,
         width : "80%",
