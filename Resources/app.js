@@ -51,7 +51,10 @@ if (Ti.Platform.osname == 'android') {
 
     //check if intent is running, if not, start intent
     if (Titanium.Android.isServiceRunning(intent) == true) {
-
+        Ti.Android.stopService(intent);
+        Titanium.API.info('RUNNING NOW? ' + Titanium.Android.isServiceRunning(intent));
+        Ti.Android.startService(intent);
+        Titanium.API.info('RUNNING NOW? ' + Titanium.Android.isServiceRunning(intent));
     } else {
         //service.start();
         Ti.Android.startService(intent);

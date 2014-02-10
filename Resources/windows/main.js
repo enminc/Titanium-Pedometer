@@ -42,7 +42,7 @@ if (Ti.App.Properties.getInt('GLOBAL_PHONE_NUM') == null) {
         //send : 0
         //view : 1
         width : "90%",
-        height : "40%",
+        height : "55%",
         zIndex : 15,
         top : "10%",
         backgroundColor : '#CC000000'
@@ -51,8 +51,8 @@ if (Ti.App.Properties.getInt('GLOBAL_PHONE_NUM') == null) {
     PhoneDialog.show();
 
     var Phonetxt = Ti.UI.createTextField({
-        height : 35,
-        top : 10,
+        height : "50%",
+        //top : 10,
         left : 40,
         width : "80%",
         hintText : 'Enter LAST 5 of phone #',
